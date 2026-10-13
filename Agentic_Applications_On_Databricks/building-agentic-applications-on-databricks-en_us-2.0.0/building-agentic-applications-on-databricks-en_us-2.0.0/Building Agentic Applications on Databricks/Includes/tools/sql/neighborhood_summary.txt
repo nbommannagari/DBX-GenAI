@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION neighborhood_summary(neighborhood STRING)
+RETURNS TABLE (neighborhood STRING, avg_price DOUBLE, total_listings BIGINT, most_common_room_type STRING)
+LANGUAGE SQL
+COMMENT 'Summarize average nightly price, listing count, and dominant room type for SF Airbnb neighborhoods. Optionally filter to a single neighborhood. If no neighborhood is provided, returns all neighborhoods ranked by average price.'
+RETURN
+    SELECT
+        neighbourhood_cleansed                          AS neighborhood,
+        ROUND(AVG(price), 2)                            AS avg_price,
+        COUNT(*)                                        AS total_listings,
+        MODE(room_type)                                 AS most_common_room_type
+    FROM sf_airbnb_listings
+    WHERE neighborhood IS NULL OR neighbourhood_cleansed = neighborhood
+    GROUP BY neighbourhood_cleansed
+    ORDER BY avg_price DESC

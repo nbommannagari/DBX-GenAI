@@ -1,0 +1,60 @@
+# ============================================================
+# Course Setup Configuration
+# ============================================================
+# All sections marked OPTIONAL can be removed entirely to skip
+# that step. Steps are silent when not configured.
+# ============================================================
+
+# Set to true for development (enables manifest validation + cleanup)
+dev_mode: false
+
+# Set to true to drop the catalog after setup (requires dev_mode: true)
+resource_cleanup: false
+
+# Set to true if this course uses the Medallion Lab pattern
+medallion_lab: false
+
+# Course name — must match the 'name' field in manifest.yaml
+course_name: "Building Single Agent Applications on Databricks"
+
+# Serverless compute version check (remove to skip check)
+
+serverless_compute_version: "6"
+
+catalog:
+  prefix: "labuser"
+  schema_name: "agent_training"
+
+model_service:
+  service_name: "agent-training-model"
+  served_by: "databricks-gpt-5-2"
+  comment: "Routes to databricks-gpt-5-2 for agent training"
+
+data:
+  databricks_share_name: "databricks_airbnb_sample_data"
+  table_name: "sf_airbnb_listings"
+  vocareum_share_name: "airbnb"
+
+tools:
+  - neighborhood_summary
+
+python_tools:
+  - classify_price_tier
+
+mlflow:
+  tracking_uri: "databricks"
+  experiment_name: "oai-ma-sdk-training"
+
+libraries:
+  groups:
+    - pyyaml
+    - databricks-openai
+    - databricks-agents
+    - databricks-sdk
+    - openai
+    - openai-agents
+    - nest-asyncio
+    - databricks-mcp
+    - mlflow
+    - mlflow-skinny
+    - mlflow-tracing
