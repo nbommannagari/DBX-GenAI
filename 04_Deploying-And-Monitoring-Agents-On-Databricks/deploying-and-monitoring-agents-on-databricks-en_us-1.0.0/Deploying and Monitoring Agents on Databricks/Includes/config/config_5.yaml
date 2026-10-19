@@ -1,0 +1,46 @@
+# ============================================================
+# Course Setup Configuration
+# ============================================================
+# All sections marked OPTIONAL can be removed entirely to skip
+# that step. Steps are silent when not configured.
+# ============================================================
+
+# Set to true for development (enables manifest validation + cleanup)
+dev_mode: false
+
+# Set to true to drop the catalog after setup (requires dev_mode: true)
+resource_cleanup: false
+
+# Set to true if this course uses the Medallion Lab pattern
+medallion_lab: false
+
+# Course name — must match the 'name' field in manifest.yaml
+course_name: "Deploying and Monitoring Agents on Databricks"
+
+# Serverless compute version check (remove to skip check)
+serverless_compute_version: "5"
+
+# ---- Catalog and Schema (REQUIRED) ----
+catalog:
+  name: null          # null = auto-detect (Vocareum: username, other: prefix_username)
+  prefix: "labuser"   # Prefix used when auto-creating a catalog outside Vocareum
+  schema_name: "agent_monitoring"
+  volume_name: null   # OPTIONAL — remove or set null to skip volume creation
+
+# ---- MLflow Setup (OPTIONAL) ----
+# Standalone MLflow configuration — sets tracking URI and creates an experiment.
+# Use this when you need MLflow configured (e.g., for tracing or evaluation)
+# without going through full agent registration.
+# Remove this section to skip standalone MLflow setup.
+# NOTE: Agent setup (below) also configures MLflow automatically when enabled.
+mlflow:
+  tracking_uri: "databricks"       # default; only change for custom tracking servers
+  experiment_name: "evaluation-and-monitoring-training"  # created under /Workspace/Users/{username}/
+
+# ---- Synthetic Traces (OPTIONAL) ----
+# Generate pre-built conversation traces without making LLM calls.
+# Requires mlflow section above to be configured (needs an active experiment).
+# Set enabled: false or remove this section to skip trace generation.
+synthetic_traces:
+  enabled: true
+  app_version: "2.1.0"   # attached as a span attribute on each trace
