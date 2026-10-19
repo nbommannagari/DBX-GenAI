@@ -1,0 +1,42 @@
+# Demo Setup Configuration
+
+# Set to true if developing a Medallion Lab
+medallion_lab: false
+
+# Set to true for development
+dev_mode: false
+
+# Set to true to drop the catalog after setup (dev_mode must be enabled)
+resource_cleanup: false
+
+# Set Course Name — must match the lab 'name' field in manifest.yaml
+course_name: ""
+
+# Compute check for correct serverless version
+serverless_compute_version: "6"
+
+# Catalog and Schema
+catalog:
+  name: null          # null = auto-detect (Vocareum: username, other: prefix_username)
+  prefix: "labuser"   # Used when auto-creating a catalog outside Vocareum
+  schema_name: "rag_schema"
+
+# Copy shared assets from dbacademy into user volumes
+# Each item can be a file or folder.  Keys per item:
+#   source      (required) - relative path under source_volume
+#   dest        (optional) - relative path inside the destination volume (default: same as source)
+#   dest_volume (optional) - target volume name; created automatically if it doesn't exist.
+#                            When omitted the item lands in the default volume (catalog.volume_name, if set).
+volume_copy:
+  source_volume: "/Volumes/dbacademy/rag_all/vol_all"
+  items:
+    - source: "listings"
+      dest_volume: "listings_vol"              # → /Volumes/{catalog}/rag_schema/listings_vol/listings/
+    - source: "additional_listing_info"
+      dest_volume: "house_rules_vol"           # → /Volumes/{catalog}/rag_schema/house_rules_vol/additional_listing_info/
+
+libraries:
+  groups:
+    - databricks-sdk
+    - databricks-ai-search
+    - mlflow

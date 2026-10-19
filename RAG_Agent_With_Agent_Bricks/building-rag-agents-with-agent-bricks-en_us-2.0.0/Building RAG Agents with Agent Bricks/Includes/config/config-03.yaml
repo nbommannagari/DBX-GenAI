@@ -1,0 +1,37 @@
+# Demo Setup Configuration — Lab 03: Lakebase Search Workloads
+
+# Set to true if developing a Medallion Lab
+medallion_lab: false
+
+# Set to true for development
+dev_mode: false
+
+# Set to true to drop the catalog after setup (dev_mode must be enabled)
+resource_cleanup: false
+
+# Set Course Name — must match the lab 'name' field in manifest.yaml
+course_name: ""
+
+# Compute check for correct serverless version
+serverless_compute_version: "6"
+
+# Catalog and Schema
+catalog:
+  name: null          # null = auto-detect (Vocareum: username, other: prefix_username)
+  prefix: "labuser"   # Used when auto-creating a catalog outside Vocareum
+  schema_name: "rag_schema"
+
+# Lakebase Search configuration
+# Connects to the student's pre-created Lakebase project, loads document data, and builds indexes.
+lakebase_search:
+  project_suffix: "lb-search"          # Students must pre-create: {username}-lb-search
+  branch: "production"                 # Lakebase branch name
+  database: "databricks_postgres"      # Postgres database name
+  table_name: "doc_chunks"             # Target table for document chunks
+  data_file: "data/lakebase-data.json" # Path relative to Includes/ directory
+  embedding_dimensions: 1024           # Dimension of pre-computed embeddings
+
+libraries:
+  groups:
+    - psycopg-binary
+    - databricks-sdk

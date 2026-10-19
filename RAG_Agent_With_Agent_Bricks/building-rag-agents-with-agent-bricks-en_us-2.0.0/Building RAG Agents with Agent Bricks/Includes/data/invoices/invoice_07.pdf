@@ -1,0 +1,93 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1552 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Ironclad Fence & Deck) Tj
+0 -16 Td
+(      1500 Timber Road, Minneapolis, MN 55401) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Drew Nakamura) Tj
+0 -16 Td
+(         108 Lakeview Terrace, Minneapolis, MN 55408) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260007) Tj
+0 -16 Td
+(Invoice Date: January 22, 2026) Tj
+0 -16 Td
+(Due Date:     February 21, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Fence post and concrete                 8      67.54     540.32) Tj
+0 -16 Td
+(Crown molding installation \(per ft     95       3.78     359.10) Tj
+0 -16 Td
+(Recessed lighting installation \(pe      4     123.72     494.88) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   1394.30) Tj
+0 -16 Td
+(                                         Tax \(9.8%\): $    136.22) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   1530.52) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Ironclad Fence & Deck!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1915
+%%EOF

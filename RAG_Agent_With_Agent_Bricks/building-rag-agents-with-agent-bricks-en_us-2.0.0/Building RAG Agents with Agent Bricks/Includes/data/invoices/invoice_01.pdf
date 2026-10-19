@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1704 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Sunshine Home Renovations) Tj
+0 -16 Td
+(      742 Maple Street, Austin, TX 78701) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Jordan Mitchell) Tj
+0 -16 Td
+(         1842 Birchwood Lane, Austin, TX 78704) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260001) Tj
+0 -16 Td
+(Invoice Date: January 01, 2026) Tj
+0 -16 Td
+(Due Date:     January 31, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Primer and paint supplies               9      99.25     893.25) Tj
+0 -16 Td
+(Granite countertop slab                 2     947.80    1895.60) Tj
+0 -16 Td
+(Window trim and caulking                2      53.18     106.36) Tj
+0 -16 Td
+(Kitchen cabinet refinishing             1     287.46     287.46) Tj
+0 -16 Td
+(Fence post and concrete                11      58.06     638.66) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   3821.33) Tj
+0 -16 Td
+(                                         Tax \(7.1%\): $    271.31) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   4092.64) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Sunshine Home Renovations!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2067
+%%EOF

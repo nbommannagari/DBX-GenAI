@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1707 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Hearthstone Painting Inc.) Tj
+0 -16 Td
+(      203 Palette Circle, Chicago, IL 60601) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Alex Kowalski) Tj
+0 -16 Td
+(         3150 Dearborn Avenue, Chicago, IL 60614) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260009) Tj
+0 -16 Td
+(Invoice Date: March 27, 2026) Tj
+0 -16 Td
+(Due Date:     April 26, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Primer and paint supplies               8      46.85     374.80) Tj
+0 -16 Td
+(Porcelain floor tile \(per sq ft\)      186      10.53    1958.58) Tj
+0 -16 Td
+(Crown molding installation \(per ft     56       8.36     468.16) Tj
+0 -16 Td
+(Plumbing fixture replacement            2     380.91     761.82) Tj
+0 -16 Td
+(Tile installation labor \(per sq ft    158       8.39    1325.62) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   4888.98) Tj
+0 -16 Td
+(                                         Tax \(9.8%\): $    480.10) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   5369.08) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Hearthstone Painting Inc.!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2070
+%%EOF

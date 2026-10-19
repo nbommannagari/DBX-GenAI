@@ -1,0 +1,8 @@
+# Demo Setup Configuration
+
+libraries:
+  groups:
+    - reportlab
+    - databricks-sdk
+    - databricks-ai-search
+    - pyyaml

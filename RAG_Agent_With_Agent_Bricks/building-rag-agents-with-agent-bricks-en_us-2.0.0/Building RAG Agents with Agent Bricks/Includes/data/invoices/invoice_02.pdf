@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1693 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Premier Plumbing Solutions) Tj
+0 -16 Td
+(      1201 Oak Avenue, Denver, CO 80202) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Casey Rivera) Tj
+0 -16 Td
+(         309 Elm Street, Denver, CO 80203) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260002) Tj
+0 -16 Td
+(Invoice Date: April 19, 2026) Tj
+0 -16 Td
+(Due Date:     May 19, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Sod installation \(per sq ft\)          548       2.40    1315.20) Tj
+0 -16 Td
+(Drywall patching and repair             2     183.36     366.72) Tj
+0 -16 Td
+(Bathroom tile removal and disposal      2     341.44     682.88) Tj
+0 -16 Td
+(Landscape design consultation           1     240.88     240.88) Tj
+0 -16 Td
+(Countertop installation labor           2     348.36     696.72) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   3302.40) Tj
+0 -16 Td
+(                                         Tax \(8.0%\): $    264.85) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   3567.25) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Premier Plumbing Solutions!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2056
+%%EOF

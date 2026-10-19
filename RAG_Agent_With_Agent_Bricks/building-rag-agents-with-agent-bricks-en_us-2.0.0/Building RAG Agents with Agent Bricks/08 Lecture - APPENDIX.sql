@@ -1,0 +1,328 @@
+-- Databricks notebook source
+-- MAGIC %md
+-- MAGIC
+-- MAGIC <div style="text-align: center; line-height: 0; padding-top: 9px;">
+-- MAGIC   <img
+-- MAGIC     src="https://databricks.com/wp-content/uploads/2018/03/db-academy-rgb-1200px.png"
+-- MAGIC     alt="Databricks Learning"
+-- MAGIC   >
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- DBTITLE 1,Appendix Introduction
+-- MAGIC %md
+-- MAGIC # Lecture - APPENDIX
+-- MAGIC #### Duration: 20 minutes
+-- MAGIC This appendix covers the core search primitives that power retrieval in a RAG system on Databricks. Each section pairs a visual reference diagram with the underlying concepts:
+-- MAGIC
+-- MAGIC - **Distance Metrics** — how Lakebase measures vector similarity (L2, cosine, inner product) and which operator class to choose.
+-- MAGIC - **Approximate Nearest-Neighbor (ANN) Search** — how `lakebase_ann` indexes partition the vector space to trade a small amount of accuracy for large speedups over exact KNN.
+-- MAGIC - **Lakebase ANN Parameters** — the session-level knobs (`probes`, `epsilon`, `prefilter`) that tune recall vs. speed at query time.
+-- MAGIC - **BM25 Full-Text Search** — how `lakebase_bm25` indexes rank documents by lexical relevance using term frequency, inverse document frequency, and length normalization.
+
+-- COMMAND ----------
+
+-- DBTITLE 1,Distance Metrics
+-- MAGIC %md-sandbox
+-- MAGIC ## Distance Metrics
+-- MAGIC
+-- MAGIC When you create a `lakebase_ann` index in Lakebase, you choose an **operator class** that determines how similarity between two vectors is measured. The choice should match how your embedding model was trained — most text embedding models use cosine similarity, but Euclidean (L2) and inner product are available when your use case requires them.
+-- MAGIC
+-- MAGIC See: [AWS](https://docs.databricks.com/aws/en/oltp/projects/lakebase-vector#operator-classes) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/oltp/projects/lakebase-vector#operator-classes)
+-- MAGIC
+-- MAGIC <div style="max-width:1120px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+-- MAGIC   <div style="display:flex;gap:18px;margin-top:20px;flex-wrap:nowrap;">
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#1B5162;margin:-4px 0 12px;"></div>
+-- MAGIC       <svg viewBox="0 0 200 150" width="100%" style="display:block;">
+-- MAGIC         <line x1="34" y1="132" x2="34" y2="20" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="188" y2="132" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="97" y2="42" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <line x1="34" y1="132" x2="143" y2="81" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <line x1="97" y1="42" x2="143" y2="81" stroke="#FF5F46" stroke-width="2.6" stroke-dasharray="6 4"/>
+-- MAGIC         <circle cx="34" cy="132" r="3.2" fill="#1B3139"/>
+-- MAGIC         <circle cx="97" cy="42" r="3.6" fill="#2272B4"/><text x="86" y="40" font-size="13" font-weight="700" fill="#2272B4">q</text>
+-- MAGIC         <circle cx="143" cy="81" r="3.6" fill="#2272B4"/><text x="149" y="80" font-size="13" font-weight="700" fill="#2272B4">d</text>
+-- MAGIC         <text x="128" y="55" font-size="13" font-weight="700" fill="#FF5F46">&#8214;q &minus; d&#8214;</text>
+-- MAGIC       </svg>
+-- MAGIC       <div style="font-size:17px;font-weight:800;color:#1B3139;margin-top:6px;">L2 &middot; Euclidean</div>
+-- MAGIC       <div style="font-size:28px;font-weight:800;color:#FF5F46;letter-spacing:1px;line-height:1;margin:4px 0 8px;">&lt;-&gt;</div>
+-- MAGIC       <div style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#EEEDE9;border-radius:5px;padding:2px 7px;color:#0b2026;">vector_l2_ops</div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin-top:10px;line-height:1.4;">Straight-line distance between the two points. Use when <b>absolute spatial distance</b> matters and vectors are <b>not normalized</b>.</div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;background:#FFFFFF;border:2px solid #FF5F46;border-radius:14px;padding:16px 18px 18px;box-shadow:0 4px 14px rgba(255,95,70,.14);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#FF5F46;margin:-4px 0 12px;"></div>
+-- MAGIC       <div style="position:absolute;top:12px;right:12px;background:#FF5F46;color:#fff;font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:9px;">MOST COMMON</div>
+-- MAGIC       <svg viewBox="0 0 200 150" width="100%" style="display:block;">
+-- MAGIC         <line x1="34" y1="132" x2="34" y2="20" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="188" y2="132" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="97" y2="42" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <line x1="34" y1="132" x2="143" y2="81" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <path d="M 64.8 117.6 A 34 34 0 0 0 53.5 104.2" fill="none" stroke="#FF5F46" stroke-width="2.6"/>
+-- MAGIC         <circle cx="34" cy="132" r="3.2" fill="#1B3139"/>
+-- MAGIC         <circle cx="97" cy="42" r="3.6" fill="#2272B4"/><text x="86" y="40" font-size="13" font-weight="700" fill="#2272B4">q</text>
+-- MAGIC         <circle cx="143" cy="81" r="3.6" fill="#2272B4"/><text x="149" y="80" font-size="13" font-weight="700" fill="#2272B4">d</text>
+-- MAGIC         <text x="70" y="108" font-size="14" font-weight="700" fill="#FF5F46">&#952;</text>
+-- MAGIC       </svg>
+-- MAGIC       <div style="font-size:17px;font-weight:800;color:#1B3139;margin-top:6px;">Cosine similarity</div>
+-- MAGIC       <div style="font-size:28px;font-weight:800;color:#FF5F46;letter-spacing:1px;line-height:1;margin:4px 0 8px;">&lt;=&gt;</div>
+-- MAGIC       <div style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#EEEDE9;border-radius:5px;padding:2px 7px;color:#0b2026;">vector_cosine_ops</div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin-top:10px;line-height:1.4;">The <b>angle</b> between vectors, ignoring magnitude. Use for <b>most text embeddings</b> &mdash; the default choice.</div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#1B5162;margin:-4px 0 12px;"></div>
+-- MAGIC       <svg viewBox="0 0 200 150" width="100%" style="display:block;">
+-- MAGIC         <line x1="34" y1="132" x2="34" y2="20" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="188" y2="132" stroke="#C6DCEA" stroke-width="1.5"/>
+-- MAGIC         <line x1="34" y1="132" x2="97" y2="42" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <line x1="34" y1="132" x2="143" y2="81" stroke="#1B3139" stroke-width="2.4"/>
+-- MAGIC         <line x1="34" y1="132" x2="93.2" y2="47.4" stroke="#FF5F46" stroke-width="3.4"/>
+-- MAGIC         <line x1="143" y1="81" x2="93.2" y2="47.4" stroke="#8FA3AD" stroke-width="1.6" stroke-dasharray="4 3"/>
+-- MAGIC         <circle cx="34" cy="132" r="3.2" fill="#1B3139"/>
+-- MAGIC         <circle cx="97" cy="42" r="3.6" fill="#2272B4"/><text x="86" y="40" font-size="13" font-weight="700" fill="#2272B4">q</text>
+-- MAGIC         <circle cx="143" cy="81" r="3.6" fill="#2272B4"/><text x="149" y="80" font-size="13" font-weight="700" fill="#2272B4">d</text>
+-- MAGIC         <text x="98" y="124" text-anchor="middle" font-size="13" font-weight="700" fill="#FF5F46">q &#183; d</text>
+-- MAGIC       </svg>
+-- MAGIC       <div style="font-size:17px;font-weight:800;color:#1B3139;margin-top:6px;">Inner product</div>
+-- MAGIC       <div style="font-size:28px;font-weight:800;color:#FF5F46;letter-spacing:1px;line-height:1;margin:4px 0 8px;">&lt;#&gt;</div>
+-- MAGIC       <div style="display:inline-block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#EEEDE9;border-radius:5px;padding:2px 7px;color:#0b2026;">vector_ip_ops</div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin-top:10px;line-height:1.4;">Projection of one vector onto the other. Use when vectors are <b>pre-normalized</b> to unit length &mdash; faster than cosine, same ranking.</div>
+-- MAGIC     </div>
+-- MAGIC   </div>
+-- MAGIC </div>
+-- MAGIC
+-- MAGIC
+
+-- COMMAND ----------
+
+-- DBTITLE 1,ANN Vector Search
+-- MAGIC %md-sandbox
+-- MAGIC ## Approximate Nearest-Neighbor (ANN) Vector Search
+-- MAGIC
+-- MAGIC Exact nearest-neighbor search compares the query vector against every row in the table — accurate, but far too slow for production workloads. Lakebase's `lakebase_ann` index uses an **Inverted File (IVF)** structure that clusters vectors into partitions around centroids at build time. At query time, only the partitions whose centroids are closest to the query are scanned. This trades a small amount of recall for dramatically faster search, making it practical to search millions of vectors in milliseconds.
+-- MAGIC
+-- MAGIC See: [AWS](https://docs.databricks.com/aws/en/oltp/projects/lakebase-vector) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/oltp/projects/lakebase-vector)
+-- MAGIC
+-- MAGIC <div style="max-width:1120px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+-- MAGIC   <div style="display:flex;gap:20px;margin-top:18px;align-items:stretch;flex-wrap:nowrap;">
+-- MAGIC     <div style="flex:1.55 1 0;min-width:0;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:14px 16px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <svg viewBox="0 0 600 360" width="100%" style="display:block;">
+-- MAGIC         <rect x="1" y="1" width="598" height="358" rx="12" fill="#FCFDFE"/>
+-- MAGIC         <ellipse cx="120" cy="95" rx="66" ry="56" fill="#F3F6F8" stroke="#CBD5DB" stroke-width="1.3" stroke-dasharray="5 4"/>
+-- MAGIC <ellipse cx="300" cy="74" rx="66" ry="56" fill="#FFF0ED" stroke="#FF5F46" stroke-width="2"/>
+-- MAGIC <ellipse cx="472" cy="108" rx="66" ry="56" fill="#F3F6F8" stroke="#CBD5DB" stroke-width="1.3" stroke-dasharray="5 4"/>
+-- MAGIC <ellipse cx="150" cy="242" rx="66" ry="56" fill="#FFF0ED" stroke="#FF5F46" stroke-width="2"/>
+-- MAGIC <ellipse cx="330" cy="250" rx="66" ry="56" fill="#FFF0ED" stroke="#FF5F46" stroke-width="2"/>
+-- MAGIC <ellipse cx="492" cy="268" rx="66" ry="56" fill="#F3F6F8" stroke="#CBD5DB" stroke-width="1.3" stroke-dasharray="5 4"/>
+-- MAGIC <line x1="268" y1="168" x2="300" y2="74" stroke="#FF5F46" stroke-width="1.6" stroke-dasharray="4 4" opacity="0.75"/>
+-- MAGIC <line x1="268" y1="168" x2="150" y2="242" stroke="#FF5F46" stroke-width="1.6" stroke-dasharray="4 4" opacity="0.75"/>
+-- MAGIC <line x1="268" y1="168" x2="330" y2="250" stroke="#FF5F46" stroke-width="1.6" stroke-dasharray="4 4" opacity="0.75"/>
+-- MAGIC <circle cx="113.3" cy="106.3" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="114.1" cy="88.1" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="95.8" cy="90.3" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="148.9" cy="104.3" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="147.0" cy="100.5" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="130.3" cy="99.1" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="76.7" cy="113.8" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="313.2" cy="85.0" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="273.6" cy="51.0" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="276.9" cy="63.7" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="307.9" cy="73.0" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="313.5" cy="59.9" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="308.0" cy="82.7" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="282.8" cy="111.8" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="486.5" cy="134.3" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="455.9" cy="91.7" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="463.1" cy="105.7" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="488.4" cy="113.5" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="460.4" cy="86.9" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="458.5" cy="134.9" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="451.0" cy="113.4" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="161.1" cy="209.2" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="151.3" cy="270.7" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="118.6" cy="237.8" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="147.2" cy="224.0" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="162.9" cy="240.6" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="111.9" cy="260.2" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="167.4" cy="262.8" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="367.5" cy="258.0" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="333.1" cy="221.4" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="346.0" cy="236.5" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="318.2" cy="222.2" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="304.8" cy="238.3" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="350.1" cy="223.2" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="292.1" cy="255.3" r="3" fill="#FF5F46"/>
+-- MAGIC <circle cx="529.5" cy="280.7" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="462.4" cy="234.8" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="501.3" cy="251.8" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="462.9" cy="289.5" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="520.6" cy="271.5" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="498.4" cy="277.6" r="3" fill="#9DB0BA"/>
+-- MAGIC <circle cx="533.4" cy="281.6" r="3" fill="#9DB0BA"/>
+-- MAGIC <rect x="115.5" y="90.5" width="9" height="9" transform="rotate(45 120 95)" fill="#7C8B93"/>
+-- MAGIC <rect x="295.5" y="69.5" width="9" height="9" transform="rotate(45 300 74)" fill="#1B3139"/>
+-- MAGIC <rect x="467.5" y="103.5" width="9" height="9" transform="rotate(45 472 108)" fill="#7C8B93"/>
+-- MAGIC <rect x="145.5" y="237.5" width="9" height="9" transform="rotate(45 150 242)" fill="#1B3139"/>
+-- MAGIC <rect x="325.5" y="245.5" width="9" height="9" transform="rotate(45 330 250)" fill="#1B3139"/>
+-- MAGIC <rect x="487.5" y="263.5" width="9" height="9" transform="rotate(45 492 268)" fill="#7C8B93"/>
+-- MAGIC <circle cx="268" cy="168" r="9" fill="#fff" stroke="#1B3139" stroke-width="2.6"/><circle cx="268" cy="168" r="3.4" fill="#1B3139"/><text x="268" y="154" text-anchor="middle" font-size="13" font-weight="800" fill="#1B3139">query</text>
+-- MAGIC       </svg>
+-- MAGIC       <div style="display:flex;gap:20px;justify-content:center;margin-top:8px;font-size:12.5px;color:#5A6A70;flex-wrap:wrap;">
+-- MAGIC         <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:11px;height:11px;border-radius:50%;background:#FF5F46;"></span>scanned partitions (probes)</span>
+-- MAGIC         <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:11px;height:11px;border-radius:50%;background:#9DB0BA;"></span>skipped</span>
+-- MAGIC         <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:9px;height:9px;background:#1B3139;transform:rotate(45deg);display:inline-block;"></span>centroid</span>
+-- MAGIC       </div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1 1 0;min-width:0;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#FF5F46;margin-bottom:14px;">How it works</div>
+-- MAGIC       <div style="display:flex;gap:10px;margin-bottom:13px;"><div style="flex:none;width:9px;height:9px;border-radius:50%;background:#FF5F46;margin-top:5px;"></div><div style="font-size:13.5px;color:#1B3139;line-height:1.42;"><b>Partition once.</b> At build time, vectors are clustered into lists around centroids (IVF).</div></div>
+-- MAGIC       <div style="display:flex;gap:10px;margin-bottom:13px;"><div style="flex:none;width:9px;height:9px;border-radius:50%;background:#FF5F46;margin-top:5px;"></div><div style="font-size:13.5px;color:#1B3139;line-height:1.42;"><b>Scan a few.</b> A query is compared to centroids, then only the nearest partitions are searched &mdash; not the whole table.</div></div>
+-- MAGIC       <div style="display:flex;gap:10px;margin-bottom:13px;"><div style="flex:none;width:9px;height:9px;border-radius:50%;background:#FF5F46;margin-top:5px;"></div><div style="font-size:13.5px;color:#1B3139;line-height:1.42;"><b>Recall &harr; speed.</b> Scanning more partitions raises recall but costs query time. ANN trades a little accuracy for large speedups over exact KNN.</div></div>
+-- MAGIC     </div>
+-- MAGIC   </div>
+-- MAGIC </div>
+
+-- COMMAND ----------
+
+-- DBTITLE 1,Lakebase ANN Parameters
+-- MAGIC %md-sandbox
+-- MAGIC ## Lakebase ANN Parameters
+-- MAGIC
+-- MAGIC After creating a `lakebase_ann` index, you can tune the **recall vs. speed** trade-off at query time using three session-level settings (GUCs). The defaults (`'auto'`) work well in most cases, but you can override them per session when you need higher recall for evaluation benchmarks or lower latency for production serving.
+-- MAGIC
+-- MAGIC See: [AWS](https://docs.databricks.com/aws/en/oltp/projects/lakebase-vector#guc-reference) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/oltp/projects/lakebase-vector#guc-reference)
+-- MAGIC
+-- MAGIC <div style="max-width:1120px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+-- MAGIC   <div style="display:flex;gap:18px;margin-top:20px;flex-wrap:nowrap;">
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#FF5F46;margin:-4px 0 12px;"></div>
+-- MAGIC       <svg viewBox="0 0 220 62" width="100%" style="display:block;margin:2px 0 10px;"><circle cx="24" cy="24" r="10" fill="#FF5F46"/><circle cx="60" cy="24" r="10" fill="#FF5F46"/><circle cx="96" cy="24" r="10" fill="#FF5F46"/><circle cx="132" cy="24" r="10" fill="none" stroke="#9DB0BA" stroke-width="1.6" stroke-dasharray="3 3"/><circle cx="168" cy="24" r="10" fill="none" stroke="#9DB0BA" stroke-width="1.6" stroke-dasharray="3 3"/><circle cx="204" cy="24" r="10" fill="none" stroke="#9DB0BA" stroke-width="1.6" stroke-dasharray="3 3"/><text x="110" y="52" text-anchor="middle" font-size="11" fill="#5A6A70">partitions scanned per level</text></svg>
+-- MAGIC       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+-- MAGIC         <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:700;color:#1B3139;">lakebase_ann.probes</code>
+-- MAGIC         <span style="font-size:11px;color:#5A6A70;white-space:nowrap;">default <code style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#EEEDE9;border-radius:4px;padding:1px 6px;color:#0b2026;">'auto'</code></span>
+-- MAGIC       </div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin:12px 0 14px;line-height:1.45;">Number of IVF partitions to scan at each level. Higher values improve recall at the cost of query speed.</div>
+-- MAGIC       <div><span style="display:inline-block;font-size:11px;font-weight:700;color:#20A15B;background:#E6F5EE;border-radius:7px;padding:2px 8px;margin-right:6px;">&uarr; recall</span><span style="display:inline-block;font-size:11px;font-weight:700;color:#FF5F46;background:#FFF0ED;border-radius:7px;padding:2px 8px;margin-right:6px;">&darr; speed</span></div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#FF5F46;margin:-4px 0 12px;"></div>
+-- MAGIC       <svg viewBox="0 0 220 62" width="100%" style="display:block;margin:2px 0 10px;"><circle cx="28" cy="12" r="4" fill="#9DB0BA"/><circle cx="28" cy="12" r="7.5" fill="none" stroke="#FF5F46" stroke-width="1.8"/><circle cx="28" cy="30" r="4" fill="#9DB0BA"/><circle cx="60" cy="12" r="4" fill="#9DB0BA"/><circle cx="60" cy="30" r="4" fill="#9DB0BA"/><circle cx="60" cy="30" r="7.5" fill="none" stroke="#FF5F46" stroke-width="1.8"/><circle cx="92" cy="12" r="4" fill="#9DB0BA"/><circle cx="92" cy="12" r="7.5" fill="none" stroke="#FF5F46" stroke-width="1.8"/><circle cx="92" cy="30" r="4" fill="#9DB0BA"/><circle cx="124" cy="12" r="4" fill="#9DB0BA"/><circle cx="124" cy="30" r="4" fill="#9DB0BA"/><circle cx="124" cy="30" r="7.5" fill="none" stroke="#FF5F46" stroke-width="1.8"/><circle cx="156" cy="12" r="4" fill="#9DB0BA"/><circle cx="156" cy="12" r="7.5" fill="none" stroke="#FF5F46" stroke-width="1.8"/><circle cx="156" cy="30" r="4" fill="#9DB0BA"/><circle cx="188" cy="12" r="4" fill="#9DB0BA"/><circle cx="188" cy="30" r="4" fill="#9DB0BA"/><text x="110" y="56" text-anchor="middle" font-size="11" fill="#5A6A70">candidates reranked (full precision)</text></svg>
+-- MAGIC       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+-- MAGIC         <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:700;color:#1B3139;">lakebase_ann.epsilon</code>
+-- MAGIC         <span style="font-size:11px;color:#5A6A70;white-space:nowrap;">default <code style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#EEEDE9;border-radius:4px;padding:1px 6px;color:#0b2026;">'auto'</code></span>
+-- MAGIC       </div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin:12px 0 14px;line-height:1.45;">Controls how many candidates are reranked using full-precision distances. Higher values rerank more candidates and take longer.</div>
+-- MAGIC       <div><span style="display:inline-block;font-size:11px;font-weight:700;color:#20A15B;background:#E6F5EE;border-radius:7px;padding:2px 8px;margin-right:6px;">&uarr; recall</span><span style="display:inline-block;font-size:11px;font-weight:700;color:#FF5F46;background:#FFF0ED;border-radius:7px;padding:2px 8px;margin-right:6px;">&darr; speed</span></div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1 1 0;min-width:0;position:relative;display:flex;flex-direction:column;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="height:5px;border-radius:5px;background:#FF5F46;margin:-4px 0 12px;"></div>
+-- MAGIC       <svg viewBox="0 0 220 62" width="100%" style="display:block;margin:2px 0 10px;">
+-- MAGIC   <g stroke="#9DB0BA" stroke-width="2" stroke-linecap="round">
+-- MAGIC     <line x1="34" y1="9" x2="70" y2="9"/><line x1="80" y1="9" x2="116" y2="9"/><line x1="126" y1="9" x2="162" y2="9"/><line x1="172" y1="9" x2="186" y2="9"/>
+-- MAGIC     <line x1="34" y1="16" x2="70" y2="16"/><line x1="80" y1="16" x2="116" y2="16"/><line x1="126" y1="16" x2="162" y2="16"/>
+-- MAGIC   </g>
+-- MAGIC   <path d="M40 22 L180 22 L128 42 L92 42 Z" fill="#F3F6F8" stroke="#CBD5DB" stroke-width="1.4"/>
+-- MAGIC   <circle cx="103" cy="52" r="4.5" fill="#FF5F46"/><circle cx="117" cy="52" r="4.5" fill="#FF5F46"/>
+-- MAGIC   <text x="110" y="60" text-anchor="middle" font-size="11" fill="#5A6A70"></text>
+-- MAGIC </svg>
+-- MAGIC       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+-- MAGIC         <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:700;color:#1B3139;">lakebase_ann.prefilter</code>
+-- MAGIC         <span style="font-size:11px;color:#5A6A70;white-space:nowrap;">default <code style="font-family:ui-monospace,Menlo,Consolas,monospace;background:#EEEDE9;border-radius:4px;padding:1px 6px;color:#0b2026;">off</code></span>
+-- MAGIC       </div>
+-- MAGIC       <div style="font-size:13.5px;color:#5A6A70;margin:12px 0 14px;line-height:1.45;">Evaluates non-vector filters <i>before</i> full-precision reranking. Valid values <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;">on</code> / <code style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;">off</code>.</div>
+-- MAGIC       <div style="margin-top:auto;"><span style="display:inline-block;font-size:11px;font-weight:700;color:#2272B4;background:#EAF1F8;border-radius:7px;padding:2px 8px;margin-right:6px;">best: cheap filter</span><span style="display:inline-block;font-size:11px;font-weight:700;color:#2272B4;background:#EAF1F8;border-radius:7px;padding:2px 8px;margin-right:6px;">removes most rows</span></div>
+-- MAGIC     </div>
+-- MAGIC   </div>
+-- MAGIC </div>
+-- MAGIC
+
+-- COMMAND ----------
+
+-- DBTITLE 1,BM25 Full-Text Search
+-- MAGIC %md-sandbox
+-- MAGIC ## BM25 Full-Text Search
+-- MAGIC
+-- MAGIC Vector search finds semantically similar content, but sometimes you need **exact keyword matching** — for product names, error codes, proper nouns, or any term where spelling matters more than meaning. Lakebase's `lakebase_bm25` index provides production-grade full-text search that ranks results using the BM25 algorithm, which improves on Postgres's built-in `ts_rank` by incorporating corpus-wide statistics for more stable, accurate scoring as data grows.
+-- MAGIC
+-- MAGIC See: [AWS](https://docs.databricks.com/aws/en/oltp/projects/lakebase-text) | [Azure](https://learn.microsoft.com/en-us/azure/databricks/oltp/projects/lakebase-text)
+-- MAGIC
+-- MAGIC <div style="max-width:1120px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+-- MAGIC   <div style="display:flex;gap:20px;margin-top:18px;align-items:stretch;flex-wrap:nowrap;">
+-- MAGIC     <div style="flex:1 1 0;min-width:0;background:#F9F7F4;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px;">
+-- MAGIC       <div style="font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#FF5F46;margin-bottom:12px;">BM25 score = 3 factors</div>
+-- MAGIC       <div style="background:#fff;border:1.5px solid #C6DCEA;border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;">
+-- MAGIC       <div style="flex:none;"><svg width="34" height="30" viewBox="0 0 34 30"><rect x="2" y="18" width="7" height="12" rx="1.5" fill="#FF5F46"/><rect x="13" y="10" width="7" height="20" rx="1.5" fill="#FF5F46"/><rect x="24" y="2" width="7" height="28" rx="1.5" fill="#FF5F46"/></svg></div>
+-- MAGIC       <div><div style="font-size:14px;font-weight:800;color:#1B3139;">Term frequency</div>
+-- MAGIC       <div style="font-size:12.5px;color:#5A6A70;line-height:1.35;margin-top:2px;">How often the term appears in a document &mdash; more is more relevant.</div></div></div>
+-- MAGIC       <div style="background:#fff;border:1.5px solid #C6DCEA;border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;">
+-- MAGIC       <div style="flex:none;"><svg width="34" height="30" viewBox="0 0 34 30"><circle cx="6" cy="15" r="4" fill="#CBD5DB"/><circle cx="17" cy="15" r="4" fill="#CBD5DB"/><circle cx="28" cy="15" r="5.5" fill="#FF5F46"/></svg></div>
+-- MAGIC       <div><div style="font-size:14px;font-weight:800;color:#1B3139;">Inverse document frequency</div>
+-- MAGIC       <div style="font-size:12.5px;color:#5A6A70;line-height:1.35;margin-top:2px;">Rare terms across the corpus weigh more than common ones.</div></div></div>
+-- MAGIC       <div style="background:#fff;border:1.5px solid #C6DCEA;border-radius:10px;padding:12px 14px;margin-bottom:10px;display:flex;gap:12px;align-items:center;">
+-- MAGIC       <div style="flex:none;"><svg width="34" height="30" viewBox="0 0 34 30"><rect x="2" y="7" width="30" height="5" rx="2.5" fill="#FF5F46"/><rect x="2" y="18" width="16" height="5" rx="2.5" fill="#CBD5DB"/></svg></div>
+-- MAGIC       <div><div style="font-size:14px;font-weight:800;color:#1B3139;">Length normalization</div>
+-- MAGIC       <div style="font-size:12.5px;color:#5A6A70;line-height:1.35;margin-top:2px;">Long documents don&#39;t win just for being long.</div></div></div>
+-- MAGIC       <div style="font-size:12px;color:#5A6A70;margin-top:6px;line-height:1.4;">More accurate than <code style="font-family:ui-monospace,Menlo,Consolas,monospace;">ts_rank</code>, which lacks global corpus statistics, so scores stay stable as data grows.</div>
+-- MAGIC     </div>
+-- MAGIC     <div style="flex:1.15 1 0;min-width:0;background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(27,49,57,.07);">
+-- MAGIC       <div style="font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#FF5F46;margin-bottom:12px;">Index &amp; query</div>
+-- MAGIC       <div style="display:flex;gap:12px;margin-bottom:12px;">
+-- MAGIC       <div style="flex:none;width:24px;height:24px;border-radius:50%;background:#FF5F46;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">1</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#F6F8FA;border:1px solid #C6DCEA;border-radius:7px;padding:7px 9px;color:#0b2026;overflow-x:auto;white-space:nowrap;">to_tsvector(&#39;english&#39;, passage)</div>
+-- MAGIC         <div style="font-size:12px;color:#5A6A70;margin-top:4px;line-height:1.35;">Tokenize text &mdash; stemming &amp; stop-word removal for the language.</div></div></div>
+-- MAGIC       <div style="display:flex;gap:12px;margin-bottom:12px;">
+-- MAGIC       <div style="flex:none;width:24px;height:24px;border-radius:50%;background:#FF5F46;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">2</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#F6F8FA;border:1px solid #C6DCEA;border-radius:7px;padding:7px 9px;color:#0b2026;overflow-x:auto;white-space:nowrap;">CREATE INDEX ... USING <span style='color:#C0341D;font-weight:700'>lakebase_bm25</span> (vector)</div>
+-- MAGIC         <div style="font-size:12px;color:#5A6A70;margin-top:4px;line-height:1.35;">Build <b>after</b> inserting data &mdash; BM25 computes corpus stats at build time.</div></div></div>
+-- MAGIC       <div style="display:flex;gap:12px;margin-bottom:12px;">
+-- MAGIC       <div style="flex:none;width:24px;height:24px;border-radius:50%;background:#FF5F46;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">3</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#F6F8FA;border:1px solid #C6DCEA;border-radius:7px;padding:7px 9px;color:#0b2026;overflow-x:auto;white-space:nowrap;">vector <span style='color:#C0341D;font-weight:700'>&lt;@&gt;</span> to_bm25query(...)</div>
+-- MAGIC         <div style="font-size:12px;color:#5A6A70;margin-top:4px;line-height:1.35;">Returns a <b>negative</b> score &mdash; <code style="font-family:ui-monospace,Menlo,Consolas,monospace;">ORDER BY score</code> ascending for best matches first.</div></div></div>
+-- MAGIC       <div style="display:flex;gap:12px;margin-bottom:12px;">
+-- MAGIC       <div style="flex:none;width:24px;height:24px;border-radius:50%;background:#FF5F46;color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;">4</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:#F6F8FA;border:1px solid #C6DCEA;border-radius:7px;padding:7px 9px;color:#0b2026;overflow-x:auto;white-space:nowrap;">Block-Max WAND &rarr; top-K</div>
+-- MAGIC         <div style="font-size:12px;color:#5A6A70;margin-top:4px;line-height:1.35;">Returns only the K most relevant rows without scoring every match.</div></div></div>
+-- MAGIC     </div>
+-- MAGIC   </div>
+-- MAGIC   <div style="background:#FFFFFF;border:1.5px solid #C6DCEA;border-radius:14px;padding:16px 20px;box-shadow:0 2px 8px rgba(27,49,57,.07);margin-top:18px;">
+-- MAGIC   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+-- MAGIC     <span style="font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#FF5F46;">Ranked results</span>
+-- MAGIC     <span style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:#EBF1F6;border:1px solid #C6DCEA;border-radius:7px;padding:3px 10px;color:#1B3139;">query: vector database</span>
+-- MAGIC   </div>
+-- MAGIC   <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+-- MAGIC       <div style="flex:none;width:22px;height:22px;border-radius:50%;background:#FFF0ED;border:1.5px solid #FF5F46;color:#FF5F46;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;">1</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-size:12.5px;color:#1B3139;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">building a scalable <mark style="background:#FFE1DB;color:#C0341D;border-radius:3px;padding:0 2px;">vector</mark> <mark style="background:#FFE1DB;color:#C0341D;border-radius:3px;padding:0 2px;">database</mark> for semantic search</div>
+-- MAGIC         <div style="height:9px;border-radius:5px;background:#EEEDE9;overflow:hidden;"><div style="width:94%;height:100%;background:#FF5F46;border-radius:5px;"></div></div>
+-- MAGIC       </div>
+-- MAGIC       <div style="flex:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#1B3139;width:42px;text-align:right;">9.4</div>
+-- MAGIC     </div>
+-- MAGIC   <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+-- MAGIC       <div style="flex:none;width:22px;height:22px;border-radius:50%;background:#F3F6F8;border:1.5px solid #9DB0BA;color:#5A6A70;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;">2</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-size:12.5px;color:#1B3139;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">the <mark style="background:#FFE1DB;color:#C0341D;border-radius:3px;padding:0 2px;">database</mark> stores embeddings and metadata</div>
+-- MAGIC         <div style="height:9px;border-radius:5px;background:#EEEDE9;overflow:hidden;"><div style="width:58%;height:100%;background:#F3B3A7;border-radius:5px;"></div></div>
+-- MAGIC       </div>
+-- MAGIC       <div style="flex:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#1B3139;width:42px;text-align:right;">5.8</div>
+-- MAGIC     </div>
+-- MAGIC   <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+-- MAGIC       <div style="flex:none;width:22px;height:22px;border-radius:50%;background:#F3F6F8;border:1.5px solid #9DB0BA;color:#5A6A70;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;">3</div>
+-- MAGIC       <div style="flex:1;min-width:0;">
+-- MAGIC         <div style="font-size:12.5px;color:#1B3139;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">a general-purpose data store for applications</div>
+-- MAGIC         <div style="height:9px;border-radius:5px;background:#EEEDE9;overflow:hidden;"><div style="width:26%;height:100%;background:#F3B3A7;border-radius:5px;"></div></div>
+-- MAGIC       </div>
+-- MAGIC       <div style="flex:none;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#1B3139;width:42px;text-align:right;">2.6</div>
+-- MAGIC     </div>
+-- MAGIC </div>
+-- MAGIC </div>
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC &copy; 2026 Databricks, Inc. All rights reserved. Apache, Apache Spark, Spark, the Spark Logo, Apache Iceberg, Iceberg, and the Apache Iceberg logo are trademarks of the <a href="https://www.apache.org/" target="_blank">Apache Software Foundation</a>.<br/><br/><a href="https://databricks.com/privacy-policy" target="_blank">Privacy Policy</a> | <a href="https://databricks.com/terms-of-use" target="_blank">Terms of Use</a> | <a href="https://help.databricks.com/" target="_blank">Support</a>

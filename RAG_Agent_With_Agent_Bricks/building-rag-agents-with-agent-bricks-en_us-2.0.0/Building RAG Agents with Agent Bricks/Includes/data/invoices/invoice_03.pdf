@@ -1,0 +1,99 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1779 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: GreenLeaf Landscaping Co.) Tj
+0 -16 Td
+(      55 Garden Way, Portland, OR 97201) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Morgan Chen) Tj
+0 -16 Td
+(         1120 Fern Avenue, Portland, OR 97205) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260003) Tj
+0 -16 Td
+(Invoice Date: January 24, 2026) Tj
+0 -16 Td
+(Due Date:     February 23, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Recessed lighting installation \(pe      9     224.41    2019.69) Tj
+0 -16 Td
+(Kitchen cabinet refinishing             2     430.94     861.88) Tj
+0 -16 Td
+(New front door installation             1     568.74     568.74) Tj
+0 -16 Td
+(Tile installation labor \(per sq ft     70      12.96     907.20) Tj
+0 -16 Td
+(Bathroom vanity and sink install        1    1340.85    1340.85) Tj
+0 -16 Td
+(Flooring underlayment material          4     144.62     578.48) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   6276.84) Tj
+0 -16 Td
+(                                         Tax \(8.2%\): $    513.45) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   6790.29) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing GreenLeaf Landscaping Co.!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2142
+%%EOF

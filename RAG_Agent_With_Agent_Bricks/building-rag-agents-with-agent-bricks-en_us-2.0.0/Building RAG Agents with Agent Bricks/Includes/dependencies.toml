@@ -1,0 +1,20 @@
+# Package catalog for Building Agentic Applications on Databricks.
+# Auto-generated from workspace Classroom-Setup notebooks.
+
+[databricks-sdk]
+databricks-sdk = "0.122.0"
+
+[databricks-ai-search]
+databricks-ai-search = "0.78"
+
+[mlflow]
+mlflow = "3.12.0"
+
+[pyyaml]
+pyyaml = "6.0.3"
+
+[psycopg-binary]
+"psycopg[binary]" = "3.3.4"
+
+[reportlab]
+reportlab = "4.4.10"

@@ -1,0 +1,99 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1782 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Cornerstone Flooring LLC) Tj
+0 -16 Td
+(      420 Hardwood Blvd, Charlotte, NC 28201) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Riley Thompson) Tj
+0 -16 Td
+(         743 Sycamore Court, Charlotte, NC 28205) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260006) Tj
+0 -16 Td
+(Invoice Date: March 24, 2026) Tj
+0 -16 Td
+(Due Date:     April 23, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Crown molding installation \(per ft     51       6.57     335.07) Tj
+0 -16 Td
+(Plumbing fixture replacement            1     414.52     414.52) Tj
+0 -16 Td
+(New front door installation             1     729.26     729.26) Tj
+0 -16 Td
+(Deck staining and sealing               1     775.25     775.25) Tj
+0 -16 Td
+(Primer and paint supplies               7      87.71     613.97) Tj
+0 -16 Td
+(Granite countertop slab                 2    1448.75    2897.50) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   5765.57) Tj
+0 -16 Td
+(                                         Tax \(7.6%\): $    441.07) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   6206.64) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Cornerstone Flooring LLC!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2145
+%%EOF

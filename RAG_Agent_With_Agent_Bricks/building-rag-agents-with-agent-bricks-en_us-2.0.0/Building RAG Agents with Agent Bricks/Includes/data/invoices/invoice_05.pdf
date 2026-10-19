@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1707 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: BlueWave Electrical Services) Tj
+0 -16 Td
+(      89 Circuit Lane, Seattle, WA 98101) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Avery Patel) Tj
+0 -16 Td
+(         2201 Pine Street, Seattle, WA 98103) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260005) Tj
+0 -16 Td
+(Invoice Date: February 22, 2026) Tj
+0 -16 Td
+(Due Date:     March 24, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Sprinkler system repair                 1     260.41     260.41) Tj
+0 -16 Td
+(Landscape design consultation           1     226.48     226.48) Tj
+0 -16 Td
+(Porcelain floor tile \(per sq ft\)      177       5.70    1008.90) Tj
+0 -16 Td
+(Primer and paint supplies               8      71.65     573.20) Tj
+0 -16 Td
+(Sod installation \(per sq ft\)          342       1.29     441.18) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   2510.17) Tj
+0 -16 Td
+(                                         Tax \(6.2%\): $    156.38) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   2666.55) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing BlueWave Electrical Services!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2070
+%%EOF

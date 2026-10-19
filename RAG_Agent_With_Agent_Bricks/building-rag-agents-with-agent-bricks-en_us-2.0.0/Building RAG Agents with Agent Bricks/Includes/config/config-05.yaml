@@ -1,0 +1,26 @@
+# Demo Setup Configuration
+
+# Set to true if developing a Medallion Lab
+medallion_lab: false
+
+# Set to true for development
+dev_mode: false
+
+# Set to true to drop the catalog after setup (dev_mode must be enabled)
+resource_cleanup: false
+
+# Set Course Name — must match the lab 'name' field in manifest.yaml
+course_name: ""
+
+# Compute check for correct serverless version
+serverless_compute_version: "6"
+
+# Catalog and Schema
+catalog:
+  name: null          # null = auto-detect (Vocareum: username, other: prefix_username)
+  prefix: "labuser"   # Used when auto-creating a catalog outside Vocareum
+  schema_name: "rag_schema"
+
+libraries:
+  groups:
+    - pyyaml

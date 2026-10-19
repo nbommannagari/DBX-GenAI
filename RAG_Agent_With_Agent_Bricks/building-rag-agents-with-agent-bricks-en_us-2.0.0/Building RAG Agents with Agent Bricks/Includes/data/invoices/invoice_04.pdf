@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1702 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Apex Roofing & Gutters) Tj
+0 -16 Td
+(      310 Summit Drive, Nashville, TN 37201) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Taylor Brooks) Tj
+0 -16 Td
+(         587 Hilltop Drive, Nashville, TN 37204) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260004) Tj
+0 -16 Td
+(Invoice Date: March 06, 2026) Tj
+0 -16 Td
+(Due Date:     April 05, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Deck staining and sealing               1     861.99     861.99) Tj
+0 -16 Td
+(Interior wall painting \(per room\)       2     463.20     926.40) Tj
+0 -16 Td
+(Fence post and concrete                 6      56.71     340.26) Tj
+0 -16 Td
+(Hardwood flooring \(per sq ft\)         294       6.47    1902.18) Tj
+0 -16 Td
+(Window replacement \(per window\)         7     461.97    3233.79) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   7264.62) Tj
+0 -16 Td
+(                                         Tax \(8.4%\): $    613.13) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   7877.75) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Apex Roofing & Gutters!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2065
+%%EOF

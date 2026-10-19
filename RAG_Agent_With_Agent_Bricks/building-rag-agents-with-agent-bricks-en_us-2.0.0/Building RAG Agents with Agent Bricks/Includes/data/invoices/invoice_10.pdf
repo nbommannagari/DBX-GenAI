@@ -1,0 +1,97 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 4 0 R >> >> >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1696 >>
+stream
+BT
+/F1 11 Tf
+1 0 0 1 50 750 Tm
+(=======================================================) Tj
+0 -16 Td
+(INVOICE) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(From: Summit Kitchen & Bath) Tj
+0 -16 Td
+(      650 Granite Court, Atlanta, GA 30301) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Bill To: Jamie Reeves) Tj
+0 -16 Td
+(         411 Peachtree Lane, Atlanta, GA 30305) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Invoice #:    INV-20260010) Tj
+0 -16 Td
+(Invoice Date: February 23, 2026) Tj
+0 -16 Td
+(Due Date:     March 25, 2026) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(Description                           Qty     Unit $      Total) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(New front door installation             1    1849.42    1849.42) Tj
+0 -16 Td
+(Fence post and concrete                 6      36.05     216.30) Tj
+0 -16 Td
+(Fence panel replacement \(per secti      3     112.81     338.43) Tj
+0 -16 Td
+(Deck staining and sealing               1     652.99     652.99) Tj
+0 -16 Td
+(Roof shingle replacement \(per squa      5     247.11    1235.55) Tj
+0 -16 Td
+(-------------------------------------------------------) Tj
+0 -16 Td
+(                                           Subtotal: $   4292.69) Tj
+0 -16 Td
+(                                         Tax \(5.3%\): $    229.66) Tj
+0 -16 Td
+(                                          TOTAL DUE: $   4522.35) Tj
+0 -16 Td
+(=======================================================) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Payment Terms: Net 30) Tj
+0 -16 Td
+(Please make checks payable to the company listed above.) Tj
+0 -16 Td
+() Tj
+0 -16 Td
+(Thank you for choosing Summit Kitchen & Bath!) Tj
+0 -16 Td
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2059
+%%EOF
