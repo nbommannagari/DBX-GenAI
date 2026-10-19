@@ -1,0 +1,6 @@
+# Config for Notebook 2.7 — Applying Agent Evaluation Lab
+# Lightweight: catalog/schema context only
+
+catalog:
+  prefix: "labuser"
+  schema_name: "demo_agent_eval"

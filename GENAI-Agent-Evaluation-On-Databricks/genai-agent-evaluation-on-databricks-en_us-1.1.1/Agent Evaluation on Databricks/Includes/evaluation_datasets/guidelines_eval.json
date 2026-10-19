@@ -1,0 +1,22 @@
+[
+  {
+    "inputs": {
+      "input": [
+        {
+          "role": "user",
+          "content": "Can you tell me what the average price is in Mission?"
+        }
+      ]
+    }
+  },
+  {
+    "inputs": {
+      "input": [
+        {
+          "role": "user",
+          "content": "How many rooms in Mission have a private room?"
+        }
+      ]
+    }
+  }
+]

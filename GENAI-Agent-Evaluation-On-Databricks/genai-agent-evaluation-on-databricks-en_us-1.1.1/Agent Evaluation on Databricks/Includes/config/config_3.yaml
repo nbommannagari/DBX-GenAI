@@ -1,0 +1,6 @@
+# Config for Notebook 2.4 — Guideline Judges Demo
+# Lightweight: catalog/schema context only
+
+catalog:
+  prefix: "labuser"
+  schema_name: "demo_agent_eval"

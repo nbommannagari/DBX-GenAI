@@ -1,0 +1,31 @@
+# Config for Notebook 1.2 — Full agent setup
+# Sets up catalog, schema, volume, data, tools, agents, deployment, and eval config
+
+dev_mode: false
+resource_cleanup: false
+
+course_name: "GenAI Agent Evaluation on Databricks"
+
+serverless_compute_version: "5"
+
+catalog:
+  prefix: "labuser"
+  schema_name: "demo_agent_eval"
+  volume_name: "agent_vol"
+  volume_sources:
+    - "evaluation_datasets"
+
+data:
+  databricks_share_name: "databricks_airbnb_sample_data"
+  vocareum_share_name: "airbnb_sample_data"
+  table_name: "sf_airbnb_listings"
+
+agents:
+  llm_endpoint_name: "databricks-gpt-oss-20b"
+  deploy: true
+  alias: "champion"
+  eval_endpoints:
+    correctness: "databricks:/databricks-gpt-oss-20b"
+    safety: "databricks:/databricks-gpt-oss-20b"
+    guidelines: "databricks:/databricks-gpt-oss-120b"
+    custom: "databricks:/databricks-gpt-5-mini"

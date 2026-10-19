@@ -1,0 +1,6 @@
+# Config for Notebook 3.2 — Developer and SME Feedback Lab
+# Catalog/schema context only (traces logged to airbnb_experiment)
+
+catalog:
+  prefix: "labuser"
+  schema_name: "demo_agent_eval"

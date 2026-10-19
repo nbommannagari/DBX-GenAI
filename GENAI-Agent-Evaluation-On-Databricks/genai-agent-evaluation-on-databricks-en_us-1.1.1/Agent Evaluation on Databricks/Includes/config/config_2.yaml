@@ -1,0 +1,6 @@
+# Config for Notebook 2.2 — Built-In Judges Demo
+# Lightweight: catalog/schema context only (agent already registered in notebook 1)
+
+catalog:
+  prefix: "labuser"
+  schema_name: "demo_agent_eval"
