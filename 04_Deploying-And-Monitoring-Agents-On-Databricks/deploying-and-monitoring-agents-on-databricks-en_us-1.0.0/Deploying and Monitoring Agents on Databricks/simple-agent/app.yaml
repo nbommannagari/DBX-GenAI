@@ -1,0 +1,11 @@
+env:
+  - name: SERVING_ENDPOINT_NAME
+    valueFrom: serving-endpoint
+  - name: MLFLOW_EXPERIMENT_ID
+    valueFrom: app-experiment
+  - name: CATALOG_NAME
+    value: labuser17710504_1793019265 # <---- Update with your catalog name
+  - name: FUNCTION_1_NAME
+    value: avg_neigh_price
+
+command: ["uv", "run", "start-server"]
